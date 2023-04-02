@@ -29,10 +29,12 @@ class TestsCLI:
 
         self.parser.version = self.CLI_VERSION
         self.parser.add_argument('-v', '--version', action='version')
+        
         self.parser.add_argument('--local', action='store_true',
                 help='Don\'t send send the results to spreadsheets, just print it to stdout')
         self.parser.add_argument('--dry-run', action='store_true', 
                 help='Don\'t run the tests, only log')
+        
         self.parser.add_argument('-m', '--model', type=str, required=True, choices=['cb', 'cs'],
                 help='Defines which model should be used for resolve MCSP problem instances')
         self.parser.add_argument('-g', '--group', type=str, required=True,
@@ -59,6 +61,7 @@ class TestsCLI:
                 '3': Path('./instancesMCSP/random/Dataset_Group03'),
                 'real': Path('./instancesMCSP/real')
             }
+            results_file = Path('./results.csv').open('a')
             
             for instance in filter(self.__is_in_cases, groupsPath[group].glob('*.dat')):
                 print(f'Testando instância {instance.name}')
@@ -101,6 +104,9 @@ class TestsCLI:
                                 recval=val,
                                 time=time,
                                 solver=solverName)
+                        
+                        results_file.write(f'{instance.name},{model},{mcsp.N},{val},{time},{solverName}\n')
+            results_file.close()
         else:
             self.parser.print_help()
             sys.exit(1)
