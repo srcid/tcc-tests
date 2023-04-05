@@ -34,6 +34,8 @@ class TestsCLI:
                 help='Don\'t send send the results to spreadsheets, just print it to stdout')
         self.parser.add_argument('--dry-run', action='store_true', 
                 help='Don\'t run the tests, only log')
+        self.parser.add_argument('--limit', type=int, default='1800000',
+                help='Time limit in milliseconds')
         
         self.parser.add_argument('-m', '--model', type=str, required=True, choices=['cb', 'cs'],
                 help='Defines which model should be used for resolve MCSP problem instances')
@@ -55,6 +57,7 @@ class TestsCLI:
             group: str = self.args.group
             num_executions: int = int(self.args.num_executions)
             solvers: list = self.args.solvers[0]
+            limit: int = int(self.args.limit)
             groupsPath = {
                 '1': Path('./instancesMCSP/random/Dataset_Group01'),
                 '2': Path('./instancesMCSP/random/Dataset_Group02'),
@@ -84,28 +87,30 @@ class TestsCLI:
                         print(f'Executando {i} de {num_executions} teste')
                         
                         if self.args.dry_run:
-                            val, time = -1, -1
+                            val, time, val_status = -1, -1, -1
                         else:
-                            val, time = mcsp.solve(solverName)
+                            val, time, val_status = mcsp.solve(solverName, limit)
                         
                         if self.args.local:
                             pprint({"instance": instance.name,
                                     "model": model,
                                     "size": mcsp.N,
-                                    "recval": val,
+                                    "val": val,
                                     "time": time,
-                                    "solver": solverName})
+                                    "solver": solverName,
+                                    'status': val_status})
                         else:
                             self.spreadsheet.appendRow(
                                 groupName = group,
                                 instance=instance.name,
                                 model=model,
                                 size=mcsp.N,
-                                recval=val,
+                                val=val,
                                 time=time,
-                                solver=solverName)
+                                solver=solverName,
+                                val_status=val_status)
                         
-                        results_file.write(f'{instance.name},{model},{mcsp.N},{val},{time},{solverName}\n')
+                        results_file.write(f'{instance.name},{model},{mcsp.N},{val},{time},{solverName},{val_status}\n')
             results_file.close()
         else:
             self.parser.print_help()
