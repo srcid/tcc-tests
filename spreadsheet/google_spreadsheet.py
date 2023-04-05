@@ -14,9 +14,9 @@ class GoogleSpreadsheet:
     def __init__(self) -> None:
         self.SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
         self.SPREADSHEET_ID = getenv('SPREADSHEET_ID')
-        self.login()
+        self.__login()
 
-    def login(self) -> None:
+    def __login(self) -> None:
         self.creds = None
         if os.path.exists(getenv('TOKEN_PATH')):
             self.creds = Credentials.from_authorized_user_file(getenv('TOKEN_PATH'), self.SCOPES)
