@@ -41,7 +41,7 @@ class GoogleSpreadsheet:
             request = sheet.values().append(
                 spreadsheetId=self.SPREADSHEET_ID, 
                 range=f'{groupName}!A:A',
-                valueInputOption='USER_ENTERED', 
+                valueInputOption='RAW', 
                 insertDataOption='INSERT_ROWS',
                 body=resource,
             )
