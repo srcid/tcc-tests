@@ -29,11 +29,11 @@ class GoogleSpreadsheet:
             with open(getenv('TOKEN_PATH'), 'w') as token:
                 token.write(self.creds.to_json())
 
-    def appendRow(self, groupName: str, model: str, instance:str, size:int, recval:int, time:int, solver:str) -> None:
+    def appendRow(self, groupName: str, model: str, instance:str, size:int, val:int, time:int, solver:str, val_status: int) -> None:
         try:
             service = build('sheets', 'v4', credentials=self.creds)
             sheet = service.spreadsheets()
-            values = [[instance], [model], [size], [recval], [time], [solver]]
+            values = [[instance], [model], [size], [val], [time], [solver], [val_status]]
             resource = {
                 'majorDimension': 'COLUMNS',
                 'values': values,
