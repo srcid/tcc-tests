@@ -34,7 +34,7 @@ class TestsCLI:
                 help='Don\'t send send the results to spreadsheets, just print it to stdout')
         self.parser.add_argument('--dry-run', action='store_true', 
                 help='Don\'t run the tests, only log')
-        self.parser.add_argument('--limit', type=int, default='1800000',
+        self.parser.add_argument('--limit', type=int, default=1800000,
                 help='Time limit in milliseconds')
         
         self.parser.add_argument('-m', '--models', type=str, required=True, choices=['cb', 'cs'],
