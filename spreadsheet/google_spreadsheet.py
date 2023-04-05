@@ -3,6 +3,7 @@ from __future__ import print_function
 import os.path
 from os import getenv
 
+from dotenv import load_dotenv
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -51,6 +52,7 @@ class GoogleSpreadsheet:
             print(err)
 
 if __name__ == '__main__':
+    load_dotenv()
     sheet = GoogleSpreadsheet()
-    sheet.appendRow('1','cs','instance_xy','115','40','996553242','GUROBI')
-    sheet.appendRow('1','cb','instance_xy','115','40','996553242','CBC')
+    sheet.appendRow('1','cs','instance_xy','115','40','996553242','GUROBI', 1)
+    sheet.appendRow('1','cb','instance_xy','115','40','996553242','CBC', 0)
