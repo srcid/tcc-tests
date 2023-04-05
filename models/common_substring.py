@@ -23,12 +23,17 @@ class CommonSubstring(MCSP):
                         res[s[i:j]] = [(i,j)]
         return res
     
-    def solve(self, solverName: str):
+    def solve(self, solverName: str, limit: int):
+        NILS_TO_MILS = 1e-6
         solver = pywraplp.Solver.CreateSolver(solverName)
         if solver is None:
             return
+        
+        if not limit is None:
+            print(f'Set limit to {limit}')
+            solver.set_time_limit(limit)
           
-        # initializing the variables
+        print("initializing the variables")
         y = {}
         for t_idx, t in enumerate(self.T):
             for q_idx,q in enumerate(self.Q):
@@ -36,14 +41,14 @@ class CommonSubstring(MCSP):
                     y[t_idx,q_idx,k[0],k[1]] = solver.BoolVar(f'y[{q_idx},{t_idx},{k[0]},{k[1]}]')
         
             
-        # first constraint
+        print("First constraint")
         for t_idx, t in enumerate(self.T):
             partitions_of_S1 = [ y[t_idx, 0, k[0], k[1]] for k in self.Q[0][t] ]
             partitions_of_S2 = [ y[t_idx, 1, k[0], k[1]] for k in self.Q[1][t] ]
 
             solver.Add(solver.Sum(partitions_of_S1) == solver.Sum(partitions_of_S2))
             
-        # second contraint            
+        print("Second contraint")
         for j in range(self.N):
             substrings_at_pos_j_of_S1 = []
             for t_idx, t in enumerate(self.T):
@@ -52,7 +57,7 @@ class CommonSubstring(MCSP):
                         substrings_at_pos_j_of_S1.append(y[t_idx,0,k[0],k[1]])
             solver.Add(solver.Sum(substrings_at_pos_j_of_S1) == 1)
             
-        # third constraint
+        print("Third constraint")
         for j in range(self.N):
             substrings_at_pos_j_of_S2 = []
             for t_idx, t in enumerate(self.T):
@@ -61,7 +66,7 @@ class CommonSubstring(MCSP):
                         substrings_at_pos_j_of_S2.append(y[t_idx,1,k[0],k[1]])
             solver.Add(solver.Sum(substrings_at_pos_j_of_S2) == 1)
              
-        # objective functions
+        print("Objective functions")
         objective_terms = []
         for t_idx, t in enumerate(self.T):
             for k in self.Q[0][t]:
@@ -69,13 +74,17 @@ class CommonSubstring(MCSP):
 
         solver.Minimize(solver.Sum(objective_terms))
         
-        st = time_ns() * 1e-6
+        print("Start solving")
+        st = time_ns() * NILS_TO_MILS
         status = solver.Solve()
-        et = time_ns() * 1e-6 - st
+        et = time_ns() * NILS_TO_MILS - st
+        print('Finished Solving')
 
         if status == pywraplp.Solver.OPTIMAL or status == pywraplp.Solver.FEASIBLE:
             val = solver.Objective().Value()
+            val_status = 0 if status == pywraplp.Solver.OPTIMAL else 1
         else:
             val = -1
+            val_status = -1
 
-        return round(val,1), round(et,4)
+        return round(val,2), int(et), val_status

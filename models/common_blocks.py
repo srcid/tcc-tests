@@ -34,18 +34,24 @@ class CommonBlocks(MCSP):
                 
         return blocks
     
-    def solve(self, solverName: str):
+    def solve(self, solverName: str, limit: int):
+        NILS_TO_MILS = 1e-6
         solver = pywraplp.Solver.CreateSolver(solverName)
+        
         if solver is None:
             return
         
-        # initializing the variables
+        if not limit is None:
+            print(f'Set limit to {limit}')
+            solver.set_time_limit(limit)
+        
+        print('Initializing the variables')
         x = {}
         for t_idx, t in enumerate(self.T):
             for b in self.B[t]:
                 x[t_idx,b[0],b[1]] = solver.BoolVar(f'x[{t_idx},{b[0]},{b[1]}]')
         
-        # first constraint
+        print('First constraint')
         for j in range(self.N):
             blocks_at_pos_j = []
             for t_idx, t in enumerate(self.T):
@@ -54,7 +60,7 @@ class CommonBlocks(MCSP):
                         blocks_at_pos_j.append(x[t_idx, b[0], b[1]])
             solver.Add(solver.Sum(blocks_at_pos_j) == 1)
         
-        # second contraint
+        print('Second contraint')
         for j in range(self.N):
             blocks_at_pos_j = []
             for t_idx, t in enumerate(self.T):
@@ -63,20 +69,24 @@ class CommonBlocks(MCSP):
                         blocks_at_pos_j.append(x[t_idx, b[0], b[1]])
             solver.Add(solver.Sum(blocks_at_pos_j) == 1)
             
-        # objective functions
+        print('Objective functions')
         objetive_terms = []
         for t_idx, t in enumerate(self.T):
             for b in self.B[t]:
                 objetive_terms.append(x[t_idx,b[0],b[1]])
         solver.Minimize(solver.Sum(objetive_terms))
 
-        st = time_ns() * 1e-6
+        print('Starting Solving')
+        st = time_ns() * NILS_TO_MILS
         status = solver.Solve()
-        et = time_ns() * 1e-6 - st
+        et = time_ns() * NILS_TO_MILS - st
+        print('Finished solving')
 
         if status == pywraplp.Solver.OPTIMAL or status == pywraplp.Solver.FEASIBLE:
             val = solver.Objective().Value()
+            val_status = 0 if status == pywraplp.Solver.OPTIMAL else 1
         else:
             val = -1
+            val_status = -1
 
-        return round(val,1), round(et,4)
+        return round(val,2), int(et), val_status
