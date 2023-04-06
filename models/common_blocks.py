@@ -1,5 +1,3 @@
-from typing import Dict, List, Set, Tuple
-
 from ortools.linear_solver import pywraplp
 
 from helpers.mytime import time_ms
@@ -12,15 +10,15 @@ class CommonBlocks(MCSP):
         super().__init__(S1, S2)
         self.B = self.gen_common_blocks(self.S1, self.S2, self.T)
 
-    def get_ocurrence_indices(self, S: str, pattern: str):
+    def get_ocurrence_indices(self, S: str, pattern: str) -> list[int]:
         res = []
         for i in range(len(S)):
             if S[i:i+len(pattern)] == pattern:
                 res.append(i)
         return res
 
-    def gen_common_blocks(self, S1: str, S2: str, T: Set[str]) -> Dict[str, List[Tuple[int,int]]]:
-        blocks: Dict[str, List[Tuple[int,int]]] = {}
+    def gen_common_blocks(self, S1: str, S2: str, T: set[str]) -> dict[str, list[tuple[int,int]]]:
+        blocks: dict[str, list[tuple[int,int]]] = {}
         
         for t in T:
             pos_of_t_in_S1 = self.get_ocurrence_indices(S1, t)
@@ -35,11 +33,8 @@ class CommonBlocks(MCSP):
                 
         return blocks
     
-    def solve(self, solverName: str, limit: int):
+    def solve(self, solverName: str, limit: int) -> tuple[float, int, int]:
         solver = pywraplp.Solver.CreateSolver(solverName)
-        
-        if solver is None:
-            return
         
         if not limit is None:
             print(f'Set limit to {limit}')
@@ -86,7 +81,7 @@ class CommonBlocks(MCSP):
             val = solver.Objective().Value()
             val_status = 0 if status == pywraplp.Solver.OPTIMAL else 1
         else:
-            val = -1
+            val = -1.0
             val_status = -1
 
         return round(val,2), int(et), val_status

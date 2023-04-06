@@ -89,7 +89,7 @@ class TestsCLI:
                             print(f'Executando {i} de {num_executions} teste')
                             
                             if self.args.dry_run:
-                                val, time, val_status = -1, -1, -1
+                                val, time, val_status = -1.0, -1, -1
                             else:
                                 val, time, val_status = mcsp.solve(solverName, limit)
                             

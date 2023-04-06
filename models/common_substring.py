@@ -1,5 +1,3 @@
-from typing import Dict, List, Set, Tuple
-
 from ortools.linear_solver import pywraplp
 
 from helpers.mytime import time_ms
@@ -12,8 +10,8 @@ class CommonSubstring(MCSP):
         super().__init__(S1, S2)
         self.Q = [self.gen_substring_pos(self.S1, self.T), self.gen_substring_pos(self.S2, self.T)]
     
-    def gen_substring_pos(self, s: str, T: Set[str]) -> Dict[str, List[Tuple[int,int]]]:
-        res: Dict[str, List[Tuple[int,int]]] = {}
+    def gen_substring_pos(self, s: str, T: set[str]) -> dict[str, list[tuple[int,int]]]:
+        res: dict[str, list[tuple[int,int]]] = {}
 
         for i in range(len(s)+1):
             for j in range(i+1,len(s)+1):
@@ -24,10 +22,8 @@ class CommonSubstring(MCSP):
                         res[s[i:j]] = [(i,j)]
         return res
     
-    def solve(self, solverName: str, limit: int):
+    def solve(self, solverName: str, limit: int) -> tuple[float, int, int]:
         solver = pywraplp.Solver.CreateSolver(solverName)
-        if solver is None:
-            return
         
         if not limit is None:
             print(f'Set limit to {limit}')
@@ -84,7 +80,7 @@ class CommonSubstring(MCSP):
             val = solver.Objective().Value()
             val_status = 0 if status == pywraplp.Solver.OPTIMAL else 1
         else:
-            val = -1
+            val = -1.0
             val_status = -1
 
         return round(val,2), int(et), val_status
