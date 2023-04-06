@@ -37,27 +37,27 @@ class TestsCLI:
         self.parser.add_argument('--limit', type=int, default=1800000,
                 help='Time limit in milliseconds')
         
-        self.parser.add_argument('-m', '--models', type=str, required=True, choices=['cb', 'cs'],
-                action='append', nargs='+',
+        self.parser.add_argument('-m', '--models', type=str, required=True,
+                choices=['cb', 'cs'], nargs='+',
                 help='Defines which model should be used for resolve MCSP problem instances')
         self.parser.add_argument('-g', '--group', type=str, required=True,
                 choices=['1','2','3','real'],
                 help='Defines which group of test cases should be used')
-        self.parser.add_argument('-c', '--cases', type=int, action='append', nargs='*',
+        self.parser.add_argument('-c', '--cases', type=int, nargs='*',
                 help='Defines which instances should run for testing')
         self.parser.add_argument('-n', '--num-executions', type=self.__check_num_executions,
                 required=True, help='Define how many times a instance should execute')
-        self.parser.add_argument('-s','--solvers', type=str, required=True, action='append',
+        self.parser.add_argument('-s','--solvers', type=str, required=True,
                 nargs='+', choices=['CPLEX','GUROBI','SCIP','CBC'],
                 help='Defines which solvers should be used')
 
         self.args = self.parser.parse_args()
 
         if self.args:
-            models: str = self.args.models[0]
+            models: str = self.args.models
             group: str = self.args.group
             num_executions: int = int(self.args.num_executions)
-            solvers: list = self.args.solvers[0]
+            solvers: list = self.args.solvers
             limit: int = int(self.args.limit)
             groupsPath = {
                 '1': Path('./instancesMCSP/random/Dataset_Group01'),
@@ -121,7 +121,7 @@ class TestsCLI:
     def __is_in_cases(self, instance):
         if self.args.cases == None:
             return True
-        for case in self.args.cases[0]:
+        for case in self.args.cases:
             if instance.name.find(str(case)) != -1:
                 return True
         return False
