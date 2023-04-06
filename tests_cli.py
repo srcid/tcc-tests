@@ -127,12 +127,12 @@ class TestsCLI:
         return False
     
     def __check_num_executions(self, arg):
-            n = int(arg)
-            if n < 1:
-                raise argparse.ArgumentTypeError(
-                    'Number of executions should be a integer greater then zero'
-                )
-            return n
+        n = int(arg)
+        if n < 1:
+            raise argparse.ArgumentTypeError(
+                'Number of executions should be a integer greater then zero'
+            )
+        return n
 
 
 if __name__ == '__main__':
