@@ -1,7 +1,8 @@
-from time import time_ns
 from typing import Dict, List, Set, Tuple
 
 from ortools.linear_solver import pywraplp
+
+from helpers.mytime import time_ms
 
 from .mcsp import MCSP
 
@@ -24,7 +25,6 @@ class CommonSubstring(MCSP):
         return res
     
     def solve(self, solverName: str, limit: int):
-        NILS_TO_MILS = 1e-6
         solver = pywraplp.Solver.CreateSolver(solverName)
         if solver is None:
             return
@@ -75,9 +75,9 @@ class CommonSubstring(MCSP):
         solver.Minimize(solver.Sum(objective_terms))
         
         print("Start solving")
-        st = time_ns() * NILS_TO_MILS
+        st = time_ms()
         status = solver.Solve()
-        et = time_ns() * NILS_TO_MILS - st
+        et = time_ms() - st
         print('Finished Solving')
 
         if status == pywraplp.Solver.OPTIMAL or status == pywraplp.Solver.FEASIBLE:

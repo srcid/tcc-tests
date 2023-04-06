@@ -1,7 +1,8 @@
-from time import time_ns
 from typing import Dict, List, Set, Tuple
 
 from ortools.linear_solver import pywraplp
+
+from helpers.mytime import time_ms
 
 from .mcsp import MCSP
 
@@ -35,7 +36,6 @@ class CommonBlocks(MCSP):
         return blocks
     
     def solve(self, solverName: str, limit: int):
-        NILS_TO_MILS = 1e-6
         solver = pywraplp.Solver.CreateSolver(solverName)
         
         if solver is None:
@@ -77,9 +77,9 @@ class CommonBlocks(MCSP):
         solver.Minimize(solver.Sum(objetive_terms))
 
         print('Starting Solving')
-        st = time_ns() * NILS_TO_MILS
+        st = time_ms()
         status = solver.Solve()
-        et = time_ns() * NILS_TO_MILS - st
+        et = time_ms() - st
         print('Finished solving')
 
         if status == pywraplp.Solver.OPTIMAL or status == pywraplp.Solver.FEASIBLE:
