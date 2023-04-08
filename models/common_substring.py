@@ -25,7 +25,7 @@ class CommonSubstring(MCSP):
     def solve(self, solverName: str, limit: int) -> tuple[float, int, int]:
         solver = pywraplp.Solver.CreateSolver(solverName)
         
-        if not limit is None:
+        if limit is not None:
             print(f'Set limit to {limit}')
             solver.set_time_limit(limit)
           
