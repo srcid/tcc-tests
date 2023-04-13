@@ -34,7 +34,7 @@ class CommonBlocks(MCSP):
         return blocks
     
     def solve(self, solverName: str, limit: int) -> tuple[float, int, int]:
-        solver = pywraplp.Solver.CreateSolver(solverName)
+        solver: pywraplp.Solver = pywraplp.Solver.CreateSolver(solverName)
         
         if limit is not None:
             print(f'Set limit to {limit}')
