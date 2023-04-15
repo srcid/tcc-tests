@@ -33,7 +33,7 @@ class CommonBlocks(MCSP):
                 
         return blocks
     
-    def solve(self, solverName: str, limit: int) -> tuple[float, int, int]:
+    def solve(self, solverName: str, limit: int, heuristic: callable = None) -> tuple[float, int, int]:
         solver: pywraplp.Solver = pywraplp.Solver.CreateSolver(solverName)
         
         if limit is not None:
@@ -70,6 +70,16 @@ class CommonBlocks(MCSP):
             for b in self.B[t]:
                 objetive_terms.append(x[t_idx,b[0],b[1]])
         solver.Minimize(solver.Sum(objetive_terms))
+
+        if heuristic is not None:
+            print('Using heuristic')
+            fsol = heuristic(self.S1, self.S2)
+            variables = []
+            for t_idx, t in enumerate(self.T):
+                if t in fsol:
+                    for b in fsol[t]:
+                        variables.append(x[t_idx, b[0], b[1]])
+            solver.SetHint(variables, [1]*len(variables))
 
         print('Starting Solving')
         st = time_ms()

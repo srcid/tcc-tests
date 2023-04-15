@@ -22,7 +22,7 @@ class CommonSubstring(MCSP):
                         res[s[i:j]] = [(i,j)]
         return res
     
-    def solve(self, solverName: str, limit: int) -> tuple[float, int, int]:
+    def solve(self, solverName: str, limit: int, heuristic: callable = None) -> tuple[float, int, int]:
         solver: pywraplp.Solver = pywraplp.Solver.CreateSolver(solverName)
         
         if limit is not None:
@@ -69,6 +69,21 @@ class CommonSubstring(MCSP):
                 objective_terms.append(y[t_idx, 0, k[0], k[1]])
 
         solver.Minimize(solver.Sum(objective_terms))
+
+        if heuristic is not None:
+            print('Using heuristic')
+            variables = []
+            fsol = heuristic(self.S1, self.S2)
+            for t_idx, t in enumerate(self.T):
+                if t in fsol:
+                    for b in fsol[t]:
+                        for k in self.Q[0][t]:
+                            if k[0] == b[0]:
+                                variables.append(y[t_idx, 0, k[0], k[1]])
+                        for k in self.Q[1][t]:
+                            if k[0] == b[1]:
+                                variables.append(y[t_idx, 1, k[0], k[1]])
+            solver.SetHint(variables, [1]*len(variables))
         
         print("Start solving")
         st = time_ms()
