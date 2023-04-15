@@ -13,7 +13,7 @@ class CommonSubstring(MCSP):
     def gen_substring_pos(self, s: str, T: set[str]) -> dict[str, list[tuple[int,int]]]:
         res: dict[str, list[tuple[int,int]]] = {}
 
-        for i in range(len(s)+1):
+        for i in range(len(s)):
             for j in range(i+1,len(s)+1):
                 if s[i:j] in T:
                     if s[i:j] in res:
