@@ -65,7 +65,6 @@ class TestsCLI:
                 '3': Path('./instancesMCSP/random/Dataset_Group03'),
                 'real': Path('./instancesMCSP/real')
             }
-            results_file = Path('./results.csv').open('a')
             
             for instance in filter(self.__is_in_cases, groupsPath[group].glob('*.dat')):
                 print(f'Testando instância {instance.name}')
@@ -111,9 +110,6 @@ class TestsCLI:
                                     time=time,
                                     solver=solverName,
                                     val_status=val_status)
-                            
-                            results_file.write(f'{instance.name},{model},{mcsp.N},{val},{time},{solverName},{val_status}\n')
-            results_file.close()
         else:
             self.parser.print_help()
             sys.exit(1)
