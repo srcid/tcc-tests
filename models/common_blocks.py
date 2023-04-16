@@ -1,3 +1,5 @@
+from logging import debug, error
+
 from ortools.linear_solver import pywraplp
 
 from helpers.mytime import time_ms
@@ -37,16 +39,16 @@ class CommonBlocks(MCSP):
         solver: pywraplp.Solver = pywraplp.Solver.CreateSolver(solverName)
         
         if limit is not None:
-            print(f'Set time limit to {limit}')
+            debug(f'Set time limit to {limit}')
             solver.set_time_limit(limit)
         
-        print('Initializing the variables')
+        debug('Initializing the variables')
         x = {}
         for t_idx, t in enumerate(self.T):
             for b in self.B[t]:
                 x[t_idx,b[0],b[1]] = solver.BoolVar(f'x[{t_idx},{b[0]},{b[1]}]')
         
-        print('First constraint')
+        debug('First constraint')
         for j in range(self.N):
             blocks_at_pos_j = []
             for t_idx, t in enumerate(self.T):
@@ -55,7 +57,7 @@ class CommonBlocks(MCSP):
                         blocks_at_pos_j.append(x[t_idx, b[0], b[1]])
             solver.Add(solver.Sum(blocks_at_pos_j) == 1)
         
-        print('Second contraint')
+        debug('Second contraint')
         for j in range(self.N):
             blocks_at_pos_j = []
             for t_idx, t in enumerate(self.T):
@@ -64,7 +66,7 @@ class CommonBlocks(MCSP):
                         blocks_at_pos_j.append(x[t_idx, b[0], b[1]])
             solver.Add(solver.Sum(blocks_at_pos_j) == 1)
             
-        print('Objective functions')
+        debug('Objective functions')
         objetive_terms = []
         for t_idx, t in enumerate(self.T):
             for b in self.B[t]:
@@ -72,7 +74,7 @@ class CommonBlocks(MCSP):
         solver.Minimize(solver.Sum(objetive_terms))
 
         if heuristic is not None:
-            print('Using heuristic')
+            debug(f'Using heuristic {heuristic.__name__}')
             fsol = heuristic(self.S1, self.S2)
             variables = []
             for t_idx, t in enumerate(self.T):
@@ -81,16 +83,17 @@ class CommonBlocks(MCSP):
                         variables.append(x[t_idx, b[0], b[1]])
             solver.SetHint(variables, [1]*len(variables))
 
-        print('Starting Solving')
+        debug('Starting solving')
         st = time_ms()
         status = solver.Solve()
         et = time_ms() - st
-        print('Finished solving')
+        debug('Finished solving')
 
         if status == pywraplp.Solver.OPTIMAL or status == pywraplp.Solver.FEASIBLE:
             val = solver.Objective().Value()
             val_status = 0 if status == pywraplp.Solver.OPTIMAL else 1
         else:
+            error("Can't find a solution.")
             val = -1.0
             val_status = -1
 
