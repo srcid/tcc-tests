@@ -67,7 +67,7 @@ class TestsCLI:
             heuristics = {
                 'chrobak': chrobak
             }
-            
+
             models: str = self.args.models
             group: str = self.args.group
             num_executions: int = int(self.args.num_executions)
@@ -80,7 +80,7 @@ class TestsCLI:
                 basicConfig(level=DEBUG)
             
             for instance in filter(self.__is_in_cases, groupsPath[group].glob('*.dat')):
-                debug(f'Testando instância {instance.name}')
+                debug(f'Testing instance {instance.name}')
                 with instance.open('r') as file:
                     lines = file.readlines()
                     S1 = lines[4].strip()
@@ -89,16 +89,16 @@ class TestsCLI:
 
                 for model in models:
                     if (model == 'cb'):
-                        debug('Iniciando modelo Common Blocks')
+                        debug('Instantiate Common Blocks model')
                         mcsp: MCSP = CommonBlocks(S1, S2)
                     else:
-                        debug('Iniciando modelo Common Substring')
+                        debug('Instantiate Common Substring model')
                         mcsp: MCSP = CommonSubstring(S1,S2)
 
                     for solverName in solvers:
-                        debug(f'Usando o solver {solverName}')
+                        debug(f'Using solver {solverName}')
                         for i in range(num_executions):
-                            debug(f'Executando {i} de {num_executions} teste')
+                            debug(f'Running {i} of {num_executions} tests')
                             
                             if self.args.dry_run:
                                 val, time, val_status = -1.0, -1, -1
