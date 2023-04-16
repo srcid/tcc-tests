@@ -6,6 +6,7 @@ from pprint import pprint
 
 from dotenv import load_dotenv
 
+from heuristics.chrobak import chrobak
 from models.common_blocks import CommonBlocks
 from models.common_substring import CommonSubstring
 from models.mcsp import MCSP
@@ -52,6 +53,8 @@ class TestsCLI:
         self.parser.add_argument('-s','--solvers', type=str, required=True,
                 nargs='+', choices=['CPLEX','GUROBI','SCIP','CBC'],
                 help='Defines which solvers should be used')
+        self.parser.add_argument('--heuristic', type=str, choices=['chrobak'],
+                help="Set a heuristic to be used as warm start")
 
         self.args = self.parser.parse_args()
 
@@ -67,6 +70,10 @@ class TestsCLI:
                 '3': Path('./instancesMCSP/random/Dataset_Group03'),
                 'real': Path('./instancesMCSP/real')
             }
+            heuristics = {
+                'chrobak': chrobak
+            }
+            heuristic = heuristics.get(self.args.heuristic)
             
             if self.args.verbose:
                 basicConfig(level=DEBUG)
@@ -95,7 +102,11 @@ class TestsCLI:
                             if self.args.dry_run:
                                 val, time, val_status = -1.0, -1, -1
                             else:
-                                val, time, val_status = mcsp.solve(solverName, limit)
+                                val, time, val_status = mcsp.solve(
+                                    solverName, 
+                                    limit, 
+                                    heuristic
+                                )
                             
                             if self.args.local:
                                 pprint({"instance": instance.name,
