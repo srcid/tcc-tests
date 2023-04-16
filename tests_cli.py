@@ -72,7 +72,8 @@ class TestsCLI:
             heuristics = {
                 'chrobak': chrobak
             }
-            heuristic = heuristics.get(self.args.heuristic)
+            heuristic_name = self.args.heuristic
+            heuristic = heuristics.get(heuristic_name)
             
             if self.args.verbose:
                 basicConfig(level=DEBUG)
@@ -111,8 +112,11 @@ class TestsCLI:
                                 print(f'{instance.name},{model},{mcsp.N},' + 
                                       f'{val},{time},{solverName},{val_status}')
                             else:
+                                groupName = group
+                                if heuristic is not None:
+                                    groupName += '_' + heuristic_name
                                 self.spreadsheet.appendRow(
-                                    groupName = group,
+                                    groupName = groupName,
                                     instance=instance.name,
                                     model=model,
                                     size=mcsp.N,
