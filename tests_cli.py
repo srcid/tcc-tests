@@ -1,5 +1,6 @@
 import argparse
 import sys
+from logging import DEBUG, basicConfig, debug
 from pathlib import Path
 from pprint import pprint
 
@@ -29,6 +30,7 @@ class TestsCLI:
 
         self.parser.version = self.CLI_VERSION
         self.parser.add_argument('-v', '--version', action='version')
+        self.parser.add_argument('--verbose', action='store_true')
         
         self.parser.add_argument('--local', action='store_true',
                 help='Don\'t send send the results to spreadsheets, just print it to stdout')
@@ -66,8 +68,11 @@ class TestsCLI:
                 'real': Path('./instancesMCSP/real')
             }
             
+            if self.args.verbose:
+                basicConfig(level=DEBUG)
+            
             for instance in filter(self.__is_in_cases, groupsPath[group].glob('*.dat')):
-                print(f'Testando instância {instance.name}')
+                debug(f'Testando instância {instance.name}')
                 with instance.open('r') as file:
                     lines = file.readlines()
                     S1 = lines[4].strip()
@@ -76,16 +81,16 @@ class TestsCLI:
 
                 for model in models:
                     if (model == 'cb'):
-                        print('Iniciando modelo Common Blocks')
+                        debug('Iniciando modelo Common Blocks')
                         mcsp: MCSP = CommonBlocks(S1, S2)
                     else:
-                        print('Iniciando modelo Common Substring')
+                        debug('Iniciando modelo Common Substring')
                         mcsp: MCSP = CommonSubstring(S1,S2)
 
                     for solverName in solvers:
-                        print(f'Usando o solver {solverName}')
+                        debug(f'Usando o solver {solverName}')
                         for i in range(num_executions):
-                            print(f'Executando {i} de {num_executions} teste')
+                            debug(f'Executando {i} de {num_executions} teste')
                             
                             if self.args.dry_run:
                                 val, time, val_status = -1.0, -1, -1
