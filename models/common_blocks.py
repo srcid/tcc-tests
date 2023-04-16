@@ -37,7 +37,7 @@ class CommonBlocks(MCSP):
         solver: pywraplp.Solver = pywraplp.Solver.CreateSolver(solverName)
         
         if limit is not None:
-            print(f'Set limit to {limit}')
+            print(f'Set time limit to {limit}')
             solver.set_time_limit(limit)
         
         print('Initializing the variables')
