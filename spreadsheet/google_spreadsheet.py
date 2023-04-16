@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import os.path
+from logging import debug, error
 from os import getenv
 
 from dotenv import load_dotenv
@@ -26,14 +27,46 @@ class GoogleSpreadsheet:
                 self.creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(getenv('CLIENT_SECRET_PATH'), self.SCOPES)
+                authorization_url, state = flow.authorization_url(access_type='offline', include_granted_scopes='true')
                 self.creds = flow.run_local_server(port=0)
             with open(getenv('TOKEN_PATH'), 'w') as token:
                 token.write(self.creds.to_json())
+        self.service = build('sheets', 'v4', credentials=self.creds)
+        self.sheets = (
+            [sheet['properties']['title'] 
+             for sheet in 
+             self.service.spreadsheets()
+                .get(spreadsheetId=self.SPREADSHEET_ID)
+                .execute()
+                .get('sheets', [])
+            ]
+        )
+
 
     def appendRow(self, groupName: str, model: str, instance:str, size:int, val:int, time:int, solver:str, val_status: int) -> None:
         try:
-            service = build('sheets', 'v4', credentials=self.creds)
-            sheet = service.spreadsheets()
+            if groupName not in self.sheets:
+                debug('Sheet do not exist, creating it before insert.')
+                request = {
+                    "requests": [
+                        {
+                            "addSheet": {
+                                "properties": {
+                                    "title": groupName,
+                                }
+                            }
+                        }
+                    ]
+                }
+                response = (
+                    self.service.spreadsheets()
+                        .batchUpdate(spreadsheetId=self.SPREADSHEET_ID, body=request)
+                        .execute()
+                )
+                self.sheets.append(groupName)
+                debug(response)
+            
+            sheet = self.service.spreadsheets()
             values = [[instance], [model], [size], [val], [time], [solver], [val_status]]
             resource = {
                 'majorDimension': 'COLUMNS',
@@ -47,9 +80,9 @@ class GoogleSpreadsheet:
                 body=resource,
             )
             response = request.execute()
-            print(response)
+            debug(response)
         except HttpError as err:
-            print(err)
+            error(err)
 
 if __name__ == '__main__':
     load_dotenv()
