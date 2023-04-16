@@ -1,3 +1,3 @@
-SPREADSHEET_ID='google spreadseet ID'
+SPREADSHEET_ID='google spreadsheet ID'
 CLIENT_SECRET_PATH='path/to/your/client_secret.json'
 TOKEN_PATH='path/to/your/token.json'
