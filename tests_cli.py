@@ -2,7 +2,6 @@ import argparse
 import sys
 from logging import DEBUG, basicConfig, debug
 from pathlib import Path
-from pprint import pprint
 
 from dotenv import load_dotenv
 
@@ -109,13 +108,8 @@ class TestsCLI:
                                 )
                             
                             if self.args.local:
-                                pprint({"instance": instance.name,
-                                        "model": model,
-                                        "size": mcsp.N,
-                                        "val": val,
-                                        "time": time,
-                                        "solver": solverName,
-                                        'status': val_status})
+                                print(f'{instance.name},{model},{mcsp.N},' + 
+                                      f'{val},{time},{solverName},{val_status}')
                             else:
                                 self.spreadsheet.appendRow(
                                     groupName = group,
