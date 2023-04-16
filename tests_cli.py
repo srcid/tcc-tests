@@ -58,11 +58,6 @@ class TestsCLI:
         self.args = self.parser.parse_args()
 
         if self.args:
-            models: str = self.args.models
-            group: str = self.args.group
-            num_executions: int = int(self.args.num_executions)
-            solvers: list = self.args.solvers
-            limit: int = int(self.args.limit)
             groupsPath = {
                 '1': Path('./instancesMCSP/random/Dataset_Group01'),
                 '2': Path('./instancesMCSP/random/Dataset_Group02'),
@@ -72,6 +67,12 @@ class TestsCLI:
             heuristics = {
                 'chrobak': chrobak
             }
+            
+            models: str = self.args.models
+            group: str = self.args.group
+            num_executions: int = int(self.args.num_executions)
+            solvers: list = self.args.solvers
+            limit: int = int(self.args.limit)
             heuristic_name = self.args.heuristic
             heuristic = heuristics.get(heuristic_name)
             
