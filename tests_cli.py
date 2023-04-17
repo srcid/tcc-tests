@@ -72,7 +72,7 @@ class TestsCLI:
             group: str = self.args.group
             num_executions: int = int(self.args.num_executions)
             solvers: list = self.args.solvers
-            limit: int = int(self.args.limit)
+            limit: int = self.args.limit
             heuristic_name: str = self.args.heuristic
             heuristic = heuristics.get(heuristic_name)
             
