@@ -68,12 +68,12 @@ class TestsCLI:
                 'chrobak': chrobak
             }
 
-            models: str = self.args.models
+            models: list[str] = self.args.models
             group: str = self.args.group
             num_executions: int = int(self.args.num_executions)
             solvers: list = self.args.solvers
             limit: int = int(self.args.limit)
-            heuristic_name = self.args.heuristic
+            heuristic_name: str = self.args.heuristic
             heuristic = heuristics.get(heuristic_name)
             
             if self.args.verbose:
