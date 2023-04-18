@@ -17,7 +17,7 @@ class TestsCLI:
     CLI_VERSION='0.0.1'
 
     def __init__(self) -> None:
-        self.spreadsheet = GoogleSpreadsheet()
+        self.spreadsheet = None
         self.__run()
 
     def __run(self):
@@ -71,13 +71,16 @@ class TestsCLI:
             models: list[str] = self.args.models
             group: str = self.args.group
             num_executions: int = int(self.args.num_executions)
-            solvers: list = self.args.solvers
+            solvers: list[str] = self.args.solvers
             limit: int = self.args.limit
             heuristic_name: str = self.args.heuristic
             heuristic = heuristics.get(heuristic_name)
             
             if self.args.verbose:
                 basicConfig(level=DEBUG)
+            
+            if not self.args.local:
+                self.spreadsheet = GoogleSpreadsheet()
             
             for instance in filter(self.__is_in_cases, groupsPath[group].glob('*.dat')):
                 debug(f'Testing instance {instance.name}')
