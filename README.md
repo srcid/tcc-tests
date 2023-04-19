@@ -43,7 +43,7 @@ follow [this tutorial](https://developers.google.com/workspace/guides/configure-
 
 ### Add test user
 Add your google account to test users in your google cloud project, so you will 
-be able to give this program access to your spreadsheets.To do so, go to your 
+be able to give this program access to your spreadsheets. To do so, go to your 
 project console > APIs & Services > OAuth consent screen > Test users > Add users.
 
 ## Dotenv
