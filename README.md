@@ -1,15 +1,14 @@
 # TCC-TESTS
 
-CLI to run my graduation degree tests. I've implement two models for the minimal
+CLI to run my graduation degree tests. I've implemented two models for the minimal
 common substring partition (MCSP) problem described by Blum e Raidl (2016) using
-Google OR-Tools. As instances to problem this repository have a copy of the 
-instances provided by Ferdous e Rahman (2013).
+Google OR-Tools. The instances are provided by Ferdous e Rahman (2013).
 
 ### Ortools
 
-If you will use commercial solvers like CPLEX, you will have to compile it from
-source as explained [here](https://developers.google.com/optimization/install/python/source_linux).
-Otherwise you cant install it from pypi package.
+If you want to use commercial solvers like CPLEX, you have to compile it from
+the source, as explained [here](https://developers.google.com/optimization/install/python/source_linux).
+Otherwise, you can install it from pypi package.
 
 ```sh
 pip install --upgrade ortools==9.6.2534
@@ -17,8 +16,8 @@ pip install --upgrade ortools==9.6.2534
 
 ### Note
 
-I'm unable to install ortools in my system after build it. A workaround is 
-source the virtualenv in build folder.
+I was unable to install ortools in my system after building it. A workaround is to use the command  
+source for the virtualenv in the building folder.
 
 ```sh
 source /path/to/or-tools-9.6/build/python/venv/bin/activate
@@ -32,9 +31,9 @@ Dependencies can be installed with pip as follows.
 pip install -r requirements.txt
 ```
 
-## Google Settings
+## Google settings
 
-As this program uses google spreadsheets API you need to provide your own 
+As this program uses google spreadsheets API, you need to provide your own 
 authentication credentials.
 
 ### Generating user secret file
@@ -48,7 +47,7 @@ project console > APIs & Services > OAuth consent screen > Test users > Add user
 
 ## Dotenv
 
-Before use it, rename or copy the dotenv file to .env and assign the variables 
+Before using it, rename or copy the dotenv file to .env and assign the variables 
 the proper values.
 
 ## Options
@@ -70,10 +69,10 @@ Flags                                       | Description
 
 ## Example
 
-In this case we are running with model Common Substring (-m cs) using instance 
-113 (-c 113) from group 1 (-g 1), applying chrobak 
-heuristic(--heuristic chrobak), using CPLEX as solver (-s CPLEX) and each 
-instance will only run once (-n 1).
+In this case we are running model Common Substring (-m cs) using instance 
+113 (-c 113) from group 1 (-g 1), applying the chrobak 
+heuristic(--heuristic chrobak) as warmup, using CPLEX as solver (-s CPLEX), and each 
+instance is only running once (-n 1).
 
 ```sh
 python tests_cli.py -m cs -g 1 -c 113 -n 1 -s CPLEX --heuristic chrobak
