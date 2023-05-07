@@ -43,7 +43,7 @@ class TestsCLI:
                 choices=['cb', 'cs'], nargs='+',
                 help='Defines which model should be used for resolve MCSP problem instances')
         self.parser.add_argument('-g', '--group', type=str, required=True,
-                choices=['1','2','3','real'],
+                choices=['1','2','3','real', 'myrandom'],
                 help='Defines which group of test cases should be used')
         self.parser.add_argument('-c', '--cases', type=int, nargs='*',
                 help='Defines which instances should run for testing')
@@ -62,7 +62,8 @@ class TestsCLI:
                 '1': Path('./instancesMCSP/random/Dataset_Group01'),
                 '2': Path('./instancesMCSP/random/Dataset_Group02'),
                 '3': Path('./instancesMCSP/random/Dataset_Group03'),
-                'real': Path('./instancesMCSP/real')
+                'real': Path('./instancesMCSP/real'),
+                'myrandom': Path('./instancesMCSP/myrandom')
             }
             heuristics = {
                 'chrobak': chrobak
