@@ -43,7 +43,8 @@ class TestsCLI:
                 choices=['cb', 'cs'], nargs='+',
                 help='Defines which model should be used for resolve MCSP problem instances')
         self.parser.add_argument('-g', '--group', type=str, required=True,
-                choices=['1','2','3','real', 'myrandom'],
+                choices=['1','2','3','real', 'myrandom', 
+                         *map(lambda x: 'article' + str(x),range(1,9))],
                 help='Defines which group of test cases should be used')
         self.parser.add_argument('-c', '--cases', type=int, nargs='*',
                 help='Defines which instances should run for testing')
@@ -63,7 +64,15 @@ class TestsCLI:
                 '2': Path('./instancesMCSP/random/Dataset_Group02'),
                 '3': Path('./instancesMCSP/random/Dataset_Group03'),
                 'real': Path('./instancesMCSP/real'),
-                'myrandom': Path('./instancesMCSP/myrandom')
+                'myrandom': Path('./instancesMCSP/myrandom'),
+                'article1': Path('./instancesMCSP/article1'),
+                'article2': Path('./instancesMCSP/article2'),
+                'article3': Path('./instancesMCSP/article3'),
+                'article4': Path('./instancesMCSP/article4'),
+                'article5': Path('./instancesMCSP/article5'),
+                'article6': Path('./instancesMCSP/article6'),
+                'article7': Path('./instancesMCSP/article7'),
+                'article8': Path('./instancesMCSP/article8'),
             }
             heuristics = {
                 'chrobak': chrobak
